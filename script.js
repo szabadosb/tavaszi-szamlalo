@@ -134,6 +134,7 @@ function initConfettiPool() {
     for (let i = 0; i < MAX_ACTIVE_CONFETTI; i++) {
         const confetti = document.createElement('div');
         confetti.classList.add('confetti');
+        confetti.textContent = '🌸';
         confetti.style.display = 'none';
         confettiContainer.appendChild(confetti);
         confettiPool.push(confetti);
@@ -150,7 +151,6 @@ function activateConfetti() {
     if (confetti) {
         confetti.style.display = 'block';
         confetti.style.left = `${Math.random() * 100}vw`;
-        confetti.style.backgroundColor = getRandomColor();
 
         confetti.classList.remove('confetti');
         void confetti.offsetWidth; 

@@ -235,15 +235,17 @@ body {
 
 .confetti {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    font-size: 24px;
     opacity: 0.8;
     animation: confetti-fall 4s linear infinite;
+    pointer-events: none;
+    color: #FFC0CB; /* Pasztell rózsaszín, hogy illeszkedjen a tavaszi témához */
 }
 
 @keyframes confetti-fall {
     0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    80% { transform: translateY(90vh) rotate(720deg); opacity: 1; }
+    100% { transform: translateY(95vh) rotate(720deg); opacity: 0; }
 }
 
 /* Mobil optimalizálás */
