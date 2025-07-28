@@ -249,8 +249,7 @@ body {
   gap: 15px;
   padding: 20px;
 }
-
-     .footer-link {
+.footer-link {
             position: absolute;
             bottom: 20px;
             left: 20px;
@@ -267,7 +266,6 @@ body {
         .footer-link:hover {
             background-color: rgba(0, 0, 0, 0.7);
         }
-
 /* Mobil optimalizálás */
 @media screen and (max-width: 600px) {
   #counter {
@@ -285,41 +283,53 @@ body {
     height: 70px;
   }
 
+  .sun {
+    width: 100px;
+    height: 100px;
+    top: 20px;
+    right: 20px;
   }
 
+  .cloud1 {
+    width: 160px;
+    height: 90px;
+    top: 150px;
+    left: -180px;
+  }
+
+  .cloud2 {
+    width: 200px;
+    height: 110px;
+    top: 220px;
+    left: -230px;
+  }
+
+  .bird {
+    width: 25px;
+    height: 25px;
+    border-top: 4px solid white;
+    border-left: 4px solid white;
+  }
+
+  .bird1 {
+    top: 300px;
+    left: -80px;
+  }
+
+  .bird2 {
+    top: 240px;
+    left: -120px;
+  }
+
+  .total-countdown-box {
+    font-size: 14px;
+    padding: 16px;
+    bottom: 20px;
+    right: 20px;
+  }
 
   .footer-link {
     font-size: 1.3rem;
     padding: 8px 12px;
   }
-
-  .total-countdown-box {
-    position: fixed;
-    bottom: 40px;
-    right: 40px;
-    background-color: rgba(248, 21, 21, 0.8);
-    padding: 16px;
-    border-radius: 16px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    font-family: 'Arial', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    z-index: 100;
 }
-
-.total-countdown-box p {
-    margin: 4px 0;
-    font-weight: bold;
-}
-
-/* A 1000px-es média lekérdezést finomítjuk */
-/* Az alábbi media query blokkba kell az új méret beállításokat tenni */
-@media (max-width: 1000px) 
-  .total-countdown-box {
-    font-size: 20px;
-    padding: 25px;
-  }
-
-  .total-countdown-box p {
-    font-size: 26px;
-  }
