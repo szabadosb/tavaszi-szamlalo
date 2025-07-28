@@ -287,18 +287,30 @@ body {
 
 
   .total-countdown-box {
-    font-size: 14px;
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+   background-color: rgba(60, 179, 113, 0.8);
     padding: 16px;
-    bottom: 20px;
-    right: 20px;
-  }
+    border-radius: 16px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    z-index: 100;
+}
 
-  @media screen and (max-width: 600px) {
+.total-countdown-box p {
+    margin: 4px 0;
+    font-weight: bold;
+}
+
+/* A 1000px-es média lekérdezést finomítjuk */
+/* Az alábbi media query blokkba kell az új méret beállításokat tenni */
+@media (max-width: 1000px) {
   .total-countdown-box {
-    font-size: 14px;
-    padding: 16px;
-    bottom: 20px;
-    right: 20px;
+    font-size: 20px;
+    padding: 25px;
   }
 }
 
