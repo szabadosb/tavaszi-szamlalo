@@ -285,12 +285,19 @@ body {
     height: 70px;
   }
 
+  }
+
+
+  .footer-link {
+    font-size: 1.3rem;
+    padding: 8px 12px;
+  }
 
   .total-countdown-box {
     position: fixed;
     bottom: 40px;
     right: 40px;
-   background-color: rgba(60, 179, 113, 0.8);
+    background-color: rgba(248, 21, 21, 0.8);
     padding: 16px;
     border-radius: 16px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -307,15 +314,12 @@ body {
 
 /* A 1000px-es média lekérdezést finomítjuk */
 /* Az alábbi media query blokkba kell az új méret beállításokat tenni */
-@media (max-width: 1000px) {
+@media (max-width: 1000px) 
   .total-countdown-box {
     font-size: 20px;
     padding: 25px;
   }
-}
 
-  .footer-link {
-    font-size: 1.3rem;
-    padding: 8px 12px;
+  .total-countdown-box p {
+    font-size: 26px;
   }
-}
