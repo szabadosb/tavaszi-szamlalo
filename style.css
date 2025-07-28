@@ -1,323 +1,219 @@
 html, body {
-  overflow-x: hidden; /* Ezt már beállítottad, de itt a hangsúly */
-  width: 100%; /* Biztosítja, hogy az alap szélesség ne legyen több, mint a képernyő */
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
   margin: 0;
   padding: 0;
 }
 
 body {
-            height: 100vh;
-            background-image: 
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Inter', sans-serif;
-        }
+  height: 100vh;
+  background-image: url(kep.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+}
 
-
-/* A számláló és egyéb elemek CSS-e marad változatlan */
 #counter {
-   background-color: rgba(144, 238, 144, 0.9);
-    padding: 40px 80px;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, .3);
-    font-size: 3rem;
-    color: #2c3e50;
-    text-align: center;
+  background-color: rgba(144, 238, 144, 0.9);
+  padding: 40px 80px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, .3);
+  font-size: 3rem;
+  color: #2c3e50;
+  text-align: center;
 }
 
 #counter span {
-    display: inline-block;
-    opacity: 1;
-    transition: opacity 0.5s ease-in-out;
+  display: inline-block;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
 }
 
 #countdown-box {
-    margin-top: 20px;
-    background-color: rgba(255, 255, 255, 0.5);
-    padding: 25px 60px;
-    border-radius: 20px;
-    font-size: 2.3rem;
-    color: #000000;
-    backdrop-filter: blur(4px);
-    text-align: center;
+  margin-top: 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 25px 60px;
+  border-radius: 20px;
+  font-size: 2.3rem;
+  color: #000000;
+  backdrop-filter: blur(4px);
+  text-align: center;
 }
 
 .fade-out {
-    opacity: 0;
+  opacity: 0;
 }
 
 .hourglass {
-    position: relative;
-    width: 60px;
-    height: 100px;
-    margin-top: 40px;
-    border: 4px solid white;
-    border-radius: 10px;
-    animation: rotateHourglass 4s infinite linear;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: relative;
+  width: 60px;
+  height: 100px;
+  margin-top: 40px;
+  border: 4px solid white;
+  border-radius: 10px;
+  animation: rotateHourglass 4s infinite linear;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .top-sand, .bottom-sand {
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
 }
 
 .top-sand {
-    border-bottom: 20px solid #ffcc66;
-    top: 10px;
-    animation: topSandFlow 2s infinite;
+  border-bottom: 20px solid #ffcc66;
+  top: 10px;
+  animation: topSandFlow 2s infinite;
 }
 
 .neck {
-    width: 4px;
-    height: 20px;
-    background-color: #ffcc66;
-    animation: neckFlow 2s infinite;
+  width: 4px;
+  height: 20px;
+  background-color: #ffcc66;
+  animation: neckFlow 2s infinite;
 }
 
 .bottom-sand {
-    border-top: 20px solid #ffcc66;
-    bottom: 10px;
-    animation: bottomSandFill 2s infinite;
+  border-top: 20px solid #ffcc66;
+  bottom: 10px;
+  animation: bottomSandFill 2s infinite;
 }
 
 @keyframes rotateHourglass {
-    0% { transform: rotate(0deg); }
-    50% { transform: rotate(180deg); }
-    100% { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(180deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes topSandFlow {
-    0% { opacity: 1; }
-    50% { opacity: 0; }
-    100% { opacity: 1; }
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 @keyframes neckFlow {
-    0% { height: 20px; }
-    50% { height: 5px; }
-    100% { height: 20px; }
+  0% { height: 20px; }
+  50% { height: 5px; }
+  100% { height: 20px; }
 }
 
 @keyframes bottomSandFill {
-    0% { opacity: 0; }
-    50% { opacity: 1; }
-    100% { opacity: 0; }
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .sun {
-    position: absolute;
-    top: 40px;
-    right: 40px;
-    width: 80px;
-    height: 80px;
-    background: yellow;
-    border-radius: 50%;
-    box-shadow: 0 0 30px 10px yellow;
-    z-index: 10;
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  width: 80px;
+  height: 80px;
+  background: yellow;
+  border-radius: 50%;
+  box-shadow: 0 0 30px 10px yellow;
+  z-index: 10;
 }
 
 .cloud {
-    position: absolute;
-    background: white;
-    border-radius: 50%;
-    opacity: 0.6;
-    /* animation: moveCloud 60s linear infinite; -- Ezt módosítjuk */
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.6;
 }
 
 .cloud1 {
-    width: 100px;
-    height: 60px;
-    top: 80px;
-    left: -120px;
-    animation: moveCloud 60s linear infinite; /* Animáció hozzáadva itt */
-    animation-delay: 0s;
+  width: 100px;
+  height: 60px;
+  top: 80px;
+  left: -120px;
+  animation: moveCloud 60s linear infinite;
+  animation-delay: 0s;
 }
 
 .cloud2 {
-    width: 140px;
-    height: 80px;
-    top: 140px;
-    left: -180px;
-    animation: moveCloud 60s linear infinite; /* Animáció hozzáadva itt */
-    animation-delay: 30s;
+  width: 140px;
+  height: 80px;
+  top: 140px;
+  left: -180px;
+  animation: moveCloud 60s linear infinite;
+  animation-delay: 30s;
 }
 
-/* Módosított animáció: A 100vw helyett 100% a biztonság kedvéért */
 @keyframes moveCloud {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(calc(100vw + 200px)); } /* A felhő saját szélességével + extra hellyel megy túl */
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(100vw + 200px)); }
 }
 
 .bird {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: transparent;
-    border-top: 3px solid white;
-    border-left: 3px solid white;
-    transform: rotate(45deg);
-    /* animation: flyBird 15s linear infinite; -- Ezt módosítjuk */
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-top: 3px solid white;
+  border-left: 3px solid white;
+  transform: rotate(45deg);
 }
 
 .bird1 {
-    top: 130px;
-    left: -50px;
-    animation: flyBird 15s linear infinite; /* Animáció hozzáadva itt */
-    animation-delay: 0s;
+  top: 130px;
+  left: -50px;
+  animation: flyBird 15s linear infinite;
+  animation-delay: 0s;
 }
 
 .bird2 {
-    top: 160px;
-    left: -80px;
-    animation: flyBird 15s linear infinite; /* Animáció hozzáadva itt */
-    animation-delay: 7s;
-}
-
-/* Módosított animáció: A 110vw helyett calc(100vw + madár szélessége) */
-@keyframes flyBird {
-    0% { transform: translateX(0) rotate(45deg); }
-    100% { transform: translateX(calc(100vw + 50px)) rotate(45deg); } /* A madár saját szélességével + extra hellyel megy túl */
-}
-
-@media screen and (max-width: 600px) {
-    #counter {
-      padding: 20px 30px;
-      font-size: 2rem;
-    }
-
-    #countdown-box {
-      font-size: 1rem;
-      padding: 15px 20px;
-    }
-
-    .hourglass {
-      width: 40px;
-      height: 70px;
-    }
-}
-
-.total-countdown-box {
-    position: fixed;
-    bottom: 40px;
-    right: 40px;
-     background-color: rgba(60, 179, 113, 0.8);                             
-    padding: 16px;
-    border-radius: 16px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    font-family: 'Arial', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    z-index: 100;
-}
-
-.total-countdown-box p {
-    margin: 4px 0;
-    font-weight: bold;
-}
-
-/* A 1000px-es média lekérdezést finomítjuk */
-/* Az alábbi media query blokkba kell az új méret beállításokat tenni */
-@media (max-width: 1000px) {
-  .total-countdown-box {
-    font-size: 20px;
-    padding: 25px;
-  }
-
-  .total-countdown-box p {
-    font-size: 26px;
-  }
-
-  #counter,
-  #countdown-box {
-    font-size: 32px;
-    padding: 20px;
-  }
-
-  #counter span,
-  #countdown-box span {
-    font-size: 60px;
-  }
-
-  /* MÉRET ÉS POZÍCIÓ BEÁLLÍTÁSOK MOBILRA */
-  .sun {
-    width: 120px;
-    height: 120px;
-    top: 20px; /* A nap pozíciója változatlan marad */
-    right: 20px;
-  }
-
-  .cloud1 {
-    width: 180px;
-    height: 100px;
-    top: 150px; /* FELHŐ 1 LEJJebb */
-    left: -200px;
-  }
-
-  .cloud2 {
-    width: 220px;
-    height: 120px;
-    top: 220px; /* FELHŐ 2 LEJJebb */
-    left: -250px;
-  }
-
-  .bird {
-    width: 30px;
-    height: 30px;
-    border-top: 5px solid white;
-    border-left: 5px solid white;
-  }
-
-  .bird1 {
-    top: 300px; /* MADÁR 1 LEJJebb */
-    left: -80px;
-  }
-
-  .bird2 {
-    top: 240px; /* MADÁR 2 LEJJebb */
-    left: -120px;
-  }
-
-  .hourglass {
-    width: 70px;
-    height: 120px;
-    margin-top: 30px;
-  }
-}
-
-
-/* Az animációk módosítása, hogy ne csússzanak ki túlságosan */
-@keyframes moveCloud {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(110vw); } /* Csökkentettük a 120vw-ről */
+  top: 160px;
+  left: -80px;
+  animation: flyBird 15s linear infinite;
+  animation-delay: 7s;
 }
 
 @keyframes flyBird {
   0% { transform: translateX(0) rotate(45deg); }
-  100% { transform: translateX(100vw) rotate(45deg); } /* Csökkentettük a 110vw-ről */
+  100% { transform: translateX(calc(100vw + 50px)) rotate(45deg); }
 }
 
-/* Érdemes lehet a summer-animation-nek is adni egy z-indexet, hogy biztosan a háttérben maradjon */
+.total-countdown-box {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  background-color: rgba(60, 179, 113, 0.8);
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  z-index: 100;
+}
+
+.total-countdown-box p {
+  margin: 4px 0;
+  font-weight: bold;
+}
+
 .summer-animation {
-  position: absolute; /* Fontos, hogy ez megmaradjon */
-  width: 100%; /* Vegye fel a teljes szélességet */
-  height: 100%; /* Vegye fel a teljes magasságot */
+  position: absolute;
+  width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
-  overflow: hidden; /* Ez is hozzájárulhat a kicsúszás elleni védelemhez */
-  z-index: 5; /* Helyezzük a többi tartalom mögé, de az elemek fölé */
+  overflow: hidden;
+  z-index: 5;
 }
 
 .confetti-container {
@@ -343,18 +239,18 @@ body {
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
-
-/* Hivatkozás stílusa */
 .footer-links-container {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    z-index: 100;
-    display: flex; /* Display as flex to put links in a row */
-    gap: 15px; /* Space between links */
+  position: relative;
+  bottom: 20px;
+  left: 20px;
+  z-index: 100;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 20px;
 }
 
-  .footer-link {
+     .footer-link {
             position: absolute;
             bottom: 20px;
             left: 20px;
@@ -372,16 +268,70 @@ body {
             background-color: rgba(0, 0, 0, 0.7);
         }
 
-@media screen and (max-width: 1000px) {
-    /* ... (egyéb meglévő szabályok) ... */
+/* Mobil optimalizálás */
+@media screen and (max-width: 600px) {
+  #counter {
+    padding: 20px 30px;
+    font-size: 2rem;
+  }
 
-    .footer-links-container {
-        flex-direction: column; /* Stack links vertically on mobile */
-        gap: 10px; /* Adjust gap for vertical stacking */
-    }
+  #countdown-box {
+    font-size: 1rem;
+    padding: 15px 20px;
+  }
 
-    .footer-link {
-        font-size: 2.9rem; /* Nagyobb betűméret */
-        padding: 10px 15px; /* Nagyobb belső tér */
-    }
+  .hourglass {
+    width: 40px;
+    height: 70px;
+  }
+
+  .sun {
+    width: 100px;
+    height: 100px;
+    top: 20px;
+    right: 20px;
+  }
+
+  .cloud1 {
+    width: 160px;
+    height: 90px;
+    top: 150px;
+    left: -180px;
+  }
+
+  .cloud2 {
+    width: 200px;
+    height: 110px;
+    top: 220px;
+    left: -230px;
+  }
+
+  .bird {
+    width: 25px;
+    height: 25px;
+    border-top: 4px solid white;
+    border-left: 4px solid white;
+  }
+
+  .bird1 {
+    top: 300px;
+    left: -80px;
+  }
+
+  .bird2 {
+    top: 240px;
+    left: -120px;
+  }
+
+  .total-countdown-box {
+    font-size: 14px;
+    padding: 16px;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .footer-link {
+    font-size: 1.3rem;
+    padding: 8px 12px;
+  }
 }
