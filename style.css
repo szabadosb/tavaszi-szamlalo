@@ -329,6 +329,15 @@ body {
     bottom: 20px;
     right: 20px;
   }
+  
+  @media screen and (max-width: 600px) {
+  .total-countdown-box {
+    font-size: 14px;
+    padding: 16px;
+    bottom: 20px;
+    right: 20px;
+  }
+}
 
   .footer-link {
     font-size: 1.3rem;
