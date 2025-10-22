@@ -37,6 +37,14 @@ body {
   transition: opacity 0.5s ease-in-out;
 }
 
+/* Számok formázásának kikapcsolása */
+#counter span,
+#detailed-countdown,
+.total-countdown-box span {
+    font-variant-numeric: normal;
+    font-feature-settings: normal;
+}
+
 #countdown-box {
   margin-top: 20px;
   background-color: rgba(255, 255, 255, 0.5);
