@@ -173,12 +173,60 @@ const counterEl = document.getElementById('counter').querySelector('span');
             }
         }
 
-        function updateAll() {
-            const target = getTargetDate();
-            updateMainCounter(target);
-            updateDetailedBox(target);
-        }
+      function updateAll() {
+    const target = getTargetDate();
+    updateMainCounter(target);
+    updateDetailedBox(target);
+    updateRemainingSpringBreak();   // <--- ÚJ
+}
+
 
         // First run and update every second
         updateAll();
         setInterval(updateAll, 1000);
+
+
+
+        function updateRemainingSpringBreak() {
+    const now = new Date();
+
+    // Spring break: April 2 → April 13
+    let breakStart = new Date(now.getFullYear(), 3, 2); 
+    let breakEnd = new Date(now.getFullYear(), 3, 13);  
+
+    // Ha már április 13. után járunk → következő év
+    if (now > breakEnd) {
+        breakStart = new Date(now.getFullYear() + 1, 3, 2);
+        breakEnd = new Date(now.getFullYear() + 1, 3, 13);
+    }
+
+    const box = document.getElementById("remaining-break-box");
+    const text = document.getElementById("remaining-break-text");
+
+    if (!box || !text) return; // Ha nincs HTML elem → kilép
+
+    // SZÜNET VAN?
+    if (now >= breakStart && now < breakEnd) {
+        box.style.display = "block";
+
+        const diff = breakEnd - now;
+        const totalSeconds = Math.floor(diff / 1000);
+
+        const d = Math.floor(totalSeconds / (3600 * 24));
+        const h = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = totalSeconds % 60;
+
+        text.innerHTML = `
+            A tavaszi szünetből még hátravan:<br>
+            <span class="number">${formatNumber(d)}</span> nap,
+            <span class="number">${formatNumber(h)}</span> óra,
+            <span class="number">${formatNumber(m)}</span> perc,
+            <span class="number">${formatNumber(s)}</span> mp.
+        `;
+
+    } else {
+        // Nincs szünet → ELREJTÉS
+        box.style.display = "none";
+    }
+}
