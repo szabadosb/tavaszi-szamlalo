@@ -249,7 +249,7 @@ body {
 
 
 /* Mobil optimalizálás */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 1000px) {
   #counter {
     padding: 20px 30px;
     font-size: 2rem;
@@ -326,7 +326,7 @@ body {
 }
 
 /* Mobil */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 1000px) {
     #remaining-break-box {
         font-size: 1.2rem;
         padding: 15px 20px;
@@ -418,7 +418,7 @@ body {
 }
 
 /* Mobil */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 1000px) {
     #remaining-break-box {
         font-size: 1.2rem;
         padding: 15px 20px;
