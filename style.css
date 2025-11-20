@@ -373,6 +373,7 @@ body {
     background-color: rgba(0, 0, 0, 0.7);
 }
 
+/*
 /* Mobil nézet: 900px alatt egymás alá, balra igazítva */
 @media screen and (max-width: 1000px) {
     .footer-links-container {
@@ -391,7 +392,7 @@ body {
     }
 
     .footer-link {
-        font-size: 2.9rem;
+        font-size: 1.7rem;
         padding: 10px 12px;
         width: auto;
         justify-content: flex-start;
