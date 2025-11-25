@@ -1,201 +1,260 @@
 const counterEl = document.getElementById('counter').querySelector('span');
-        const detailedEl = document.getElementById('detailed-countdown');
-        let confettiInterval = null;
-        let confettiCleanupTimeout = null;
+const detailedEl = document.getElementById('detailed-countdown');
+let confettiInterval = null;
+let confettiCleanupTimeout = null;
 
-        const MAX_ACTIVE_CONFETTI = 120;
-        const CONFETTI_ANIMATION_DURATION = 4000;
-        const CONFETTI_REGEN_RATE = 100;
+// Új konstansok a teljesítmény javítására
+const MAX_ACTIVE_CONFETTI = 120; // Maximum ennyi konfetti elem lesz egyszerre a DOM-ban
+const CONFETTI_ANIMATION_DURATION = 4000; // A CSS animáció időtartama (4s)
+const CONFETTI_REGEN_RATE = 100; // Milyen gyakran próbáljunk újraaktiválni egy konfettit (ms)
 
-        let confettiPool = [];
-        let activeConfettiCount = 0;
+let confettiPool = []; // A konfetti elemek tárolója
+let activeConfettiCount = 0; // Aktív konfetti elemek számlálója
 
-        function getTargetDate() {
-            const now = new Date();
-            // 2026. április 2.
-            let target = new Date(now.getFullYear(), 3, 2); // Month is 0-indexed (April is 3)
+function getTargetDate() {
+    const now = new Date();
+    // Cél: Április 2. (A tavaszi szünet kezdete)
+    let target = new Date(now.getFullYear(), 3, 2); // Month is 0-indexed (April is 3)
 
-            // If today is past the target date for this year, set it for next year
-            if (now > target) {
-                target = new Date(now.getFullYear() + 1, 3, 2);
-            }
-            return target;
+    // Ha ma már elmúlt Április 2., akkor a következő év Április 2.
+    if (now > target) {
+        target = new Date(now.getFullYear() + 1, 3, 2);
+    }
+    return target;
+}
+
+function getMonthDiff(startDate, endDate) {
+    let months = 0;
+    let tempDate = new Date(startDate);
+
+    while (tempDate < endDate) {
+        const currentMonthLength = new Date(tempDate.getFullYear(), tempDate.getMonth() + 1, 0).getDate();
+        tempDate.setDate(tempDate.getDate() + currentMonthLength);
+        months++;
+    }
+
+    return months - 1;
+}
+
+function getRandomColor() {
+    // Tavaszi színek (pasztell, világos árnyalatok)
+    const colors = ["#FFC0CB", "#90EE90", "#ADD8E6", "#FFFF00", "#FFD700", "#DA70D6"];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function formatNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+// ÚJ segédfüggvény: két időpont közötti másodpercek, hétvégéket és szüneteket kihagyva
+function getWeekdaySecondsBetween(startDate, endDate) {
+    let totalMs = 0;
+    let cur = new Date(startDate);
+    
+    // Ünnepnapok (Példák, 2026-ra és a Tavaszi időszakra szabva)
+    const holidays = [
+        new Date(2025, 0, 1),   // Újév napja
+        new Date(2025, 3, 21),  // Húsvét hétfő (Ez a dátum valósághűbbé teszi a 2025-ös naptárat)
+        new Date(2025, 4, 1),   // Munka ünnepe
+        new Date(2025, 5, 9),   // Pünkösd hétfő
+        new Date(2025, 7, 20),  // Államalapítás ünnepe
+        new Date(2025, 9, 23),  // Október 23.
+        new Date(2025, 10, 1),  // Mindenszentek
+        new Date(2025, 11, 25), // Karácsony (1. nap)
+        new Date(2025, 11, 26), // Karácsony (2. nap)
+        // 2026-os Ünnepek:
+        new Date(2026, 0, 1),   // Újév napja 2026
+        // Megjegyzés: A Húsvét/Hétfő mozgó ünnep, a Tavaszi szünet ezt az időszakot foglalja magában
+    ];
+
+    // Iskolai szünetek (A Tavaszi szünet a fókuszban)
+    const schoolBreaks = [
+        // Tavaszi szünet: Április 2. → Április 13.
+        { start: new Date(2025, 3, 2), end: new Date(2025, 3, 13) }, 
+    ];
+
+    while (cur < endDate) {
+        let next = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 1, 0, 0, 0, 0);
+        if (next > endDate) next = new Date(endDate);
+
+        const day = cur.getDay(); // 0 = Sunday, 6 = Saturday
+        
+        // Ünnepnap ellenőrzése
+        const isHoliday = holidays.some(holiday => holiday.toDateString() === cur.toDateString());
+        
+        // Szünet ellenőrzése
+        const isSchoolBreak = schoolBreaks.some(breakPeriod => cur >= breakPeriod.start && cur < breakPeriod.end);
+
+        // Csak hétköznap (Hétfő-Péntek) számít, ha nem ünnep és nincs szünet
+        if (day !== 0 && day !== 6 && !isHoliday && !isSchoolBreak) {
+            totalMs += (next - cur); 
         }
 
-        function getMonthDiff(startDate, endDate) {
-            let months = 0;
-            let tempDate = new Date(startDate);
+        cur = next; 
+    }
 
-            while (tempDate < endDate) {
-                const currentMonthLength = new Date(tempDate.getFullYear(), tempDate.getMonth() + 1, 0).getDate();
-                tempDate.setDate(tempDate.getDate() + currentMonthLength);
-                months++;
-            }
-            return months - 1;
+    return Math.floor(totalMs / 1000); 
+}
+
+function initConfettiPool() {
+    const confettiContainer = document.createElement('div');
+    confettiContainer.classList.add('confetti-container');
+    document.body.appendChild(confettiContainer);
+
+    for (let i = 0; i < MAX_ACTIVE_CONFETTI; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.display = 'none';
+        confettiContainer.appendChild(confetti);
+        confettiPool.push(confetti);
+    }
+}
+
+function activateConfetti() {
+    if (activeConfettiCount >= MAX_ACTIVE_CONFETTI) {
+        return;
+    }
+
+    const confetti = confettiPool.find(c => c.style.display === 'none');
+
+    if (confetti) {
+        confetti.style.display = 'block';
+        confetti.style.left = `${Math.random() * 100}vw`;
+        confetti.style.backgroundColor = getRandomColor();
+
+        confetti.classList.remove('confetti');
+        void confetti.offsetWidth; 
+        confetti.classList.add('confetti');
+
+        activeConfettiCount++;
+
+        setTimeout(() => {
+            confetti.style.display = 'none';
+            activeConfettiCount--;
+        }, CONFETTI_ANIMATION_DURATION);
+    }
+}
+
+function startConfetti() {
+    if (confettiInterval) {
+        return;
+    }
+
+    if (confettiPool.length === 0) {
+        initConfettiPool();
+    }
+
+    confettiInterval = setInterval(activateConfetti, CONFETTI_REGEN_RATE);
+    console.log("Konfetti elindult!");
+}
+
+function stopConfetti() {
+    clearInterval(confettiInterval);
+    confettiInterval = null;
+    clearTimeout(confettiCleanupTimeout);
+    confettiCleanupTimeout = null;
+
+    confettiPool.forEach(confetti => {
+        confetti.style.display = 'none';
+    });
+    activeConfettiCount = 0;
+
+    document.querySelector('.confetti-container')?.remove();
+    confettiPool = [];
+    console.log("Konfetti leállítva!");
+}
+
+function updateMainCounter(target) {
+    const now = new Date();
+    const diffInSeconds = Math.floor((target - now) / 1000);
+
+    // Tavaszi szünet időtartama: Április 2. → Április 13.
+    let breakStart = new Date(now.getFullYear(), 3, 2); // April 2
+    let breakEnd = new Date(now.getFullYear(), 3, 13); // April 13 (exclusive)
+    
+    // Ha a szünet már elmúlt az aktuális évben, akkor a következő évre kell beállítani
+    if (now > breakEnd && now.getMonth() >= 3) {
+        breakStart.setFullYear(now.getFullYear() + 1);
+        breakEnd.setFullYear(now.getFullYear() + 1);
+    }
+
+    const isBreak = (now >= breakStart && now < breakEnd);
+
+    if (isBreak) {
+        counterEl.classList.remove('fade-out');
+        counterEl.textContent = "Tavaszi szünet van!"; // FELIRAT VÁLTOZÁS
+        detailedEl.textContent = "Élvezd a vakációt! 🐰"; // EMOJI VÁLTOZÁS
+
+        if (!confettiInterval) {
+            startConfetti();
         }
-
-        function getRandomColor() {
-            // Spring colors
-            const colors = ["#FFC0CB", "#90EE90", "#ADD8E6", "#FFFF00", "#FFD700", "#DA70D6"];
-            return colors[Math.floor(Math.random() * colors.length)];
+        return;
+    } else {
+        if (confettiInterval) {
+            stopConfetti();
         }
+    }
 
-        function initConfettiPool() {
-            const confettiContainer = document.createElement('div');
-            confettiContainer.classList.add('confetti-container');
-            document.body.appendChild(confettiContainer);
+    counterEl.classList.add('fade-out');
+    setTimeout(() => {
+        counterEl.textContent = `${formatNumber(diffInSeconds)} másodperc van hátra a tavaszi szünetig!`; // FELIRAT VÁLTOZÁS
+        counterEl.classList.remove('fade-out');
+    }, 250);
 
-            for (let i = 0; i < MAX_ACTIVE_CONFETTI; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                confetti.style.display = 'none';
-                confettiContainer.appendChild(confetti);
-                confettiPool.push(confetti);
-            }
-        }
+    // Normál (teljes idő szerint)
+    const days = Math.floor(diffInSeconds / (3600 * 24));
+    const hours = Math.floor((diffInSeconds % (3600 * 24)) / 3600);
+    const minutes = Math.floor((diffInSeconds % 3600) / 60);
+    const seconds = diffInSeconds % 60;
 
-        function activateConfetti() {
-            if (activeConfettiCount >= MAX_ACTIVE_CONFETTI) {
-                return;
-            }
+    // Tanítási napok szerint (hétvégéket, ünnepeket, szüneteket kihagyva)
+    const teachingSeconds = getWeekdaySecondsBetween(now, target);
+    const tDays = Math.floor(teachingSeconds / (3600 * 24));
+    const tHours = Math.floor((teachingSeconds % (3600 * 24)) / 3600);
+    const tMinutes = Math.floor((teachingSeconds % 3600) / 60);
+    const tSeconds = teachingSeconds % 60;
 
-            const confetti = confettiPool.find(c => c.style.display === 'none');
+    detailedEl.innerHTML = 
+        `Ez pontosan ${formatNumber(days)} nap, ${formatNumber(hours)} óra, ${formatNumber(minutes)} perc, ${formatNumber(seconds)} másodperc.` +
+        `<br><br>Ebből <strong> ${formatNumber(tDays)} </strong> iskolai nap.`;
+}
 
-            if (confetti) {
-                confetti.style.display = 'block';
-                confetti.style.left = `${Math.random() * 100}vw`;
-                confetti.style.backgroundColor = getRandomColor();
+function updateDetailedBox(target) {
+    const now = new Date();
+    let timeLeft = target - now;
 
-                confetti.classList.remove('confetti');
-                void confetti.offsetWidth;
-                confetti.classList.add('confetti');
+    if (timeLeft < 0) {
+        target = new Date(target.getFullYear() + 1, 3, 2); // Április 2.
+        timeLeft = target - now;
+    }
 
-                activeConfettiCount++;
+    const totalSeconds = Math.floor(timeLeft / 1000);
+    const totalMinutes = Math.floor(timeLeft / (1000 * 60));
+    const totalHours = Math.floor(timeLeft / (1000 * 60 * 60));
+    const totalDays = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+    const totalWeeks = Math.floor(totalDays / 7);
+    const totalMonths = getMonthDiff(now, target);
 
-                setTimeout(() => {
-                    confetti.style.display = 'none';
-                    activeConfettiCount--;
-                }, CONFETTI_ANIMATION_DURATION);
-            }
-        }
-
-        function startConfetti() {
-            if (confettiInterval) {
-                return;
-            }
-
-            if (confettiPool.length === 0) {
-                initConfettiPool();
-            }
-
-            confettiInterval = setInterval(activateConfetti, CONFETTI_REGEN_RATE);
-            console.log("Konfetti elindult!");
-        }
-
-        function stopConfetti() {
-            clearInterval(confettiInterval);
-            confettiInterval = null;
-            clearTimeout(confettiCleanupTimeout);
-            confettiCleanupTimeout = null;
-
-            confettiPool.forEach(confetti => {
-                confetti.style.display = 'none';
-            });
-            activeConfettiCount = 0;
-
-            document.querySelector('.confetti-container')?.remove();
-            confettiPool = [];
-            console.log("Konfetti leállítva!");
-        }
-
-        function formatNumber(number) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-        }
-
-        function updateMainCounter(target) {
-            const now = new Date();
-            const diffInSeconds = Math.floor((target - now) / 1000);
-
-            // Define the break period (April 2 to April 12 for Spring)
-            const breakStart = new Date(now.getFullYear(), 3, 2); // April 2
-            const breakEnd = new Date(now.getFullYear(), 3, 13); // April 13 (exclusive)
-
-            const isBreak = (now >= breakStart && now < breakEnd);
-
-            if (isBreak) {
-                counterEl.classList.remove('fade-out');
-                counterEl.textContent = "Tavaszi szünet van!";
-                detailedEl.textContent = "Élvezd a vakációt! 🎉";
-
-                if (!confettiInterval) {
-                    startConfetti();
-                }
-                return;
-            } else {
-                if (confettiInterval) {
-                    stopConfetti();
-                }
-            }
-
-            counterEl.classList.add('fade-out');
-            setTimeout(() => {
-                counterEl.textContent = `${formatNumber(diffInSeconds)} másodperc van hátra a tavaszi szünetig!`;
-                counterEl.classList.remove('fade-out');
-            }, 250);
-
-            detailedEl.textContent = `Ez pontosan ${Math.floor(diffInSeconds / (3600 * 24))} nap, ${Math.floor((diffInSeconds % (3600 * 24)) / 3600)} óra, ${Math.floor((diffInSeconds % 3600) / 60)} perc, ${diffInSeconds % 60} másodperc.`;
-        }
-
-        function updateDetailedBox(target) {
-            const now = new Date();
-            let timeLeft = target - now;
-
-            if (timeLeft < 0) {
-                // If the target date has passed, calculate for next year's break
-                target = new Date(target.getFullYear() + 1, 3, 2); // April 2
-                timeLeft = target - now;
-            }
-
-            const totalSeconds = Math.floor(timeLeft / 1000);
-            const totalMinutes = Math.floor(timeLeft / (1000 * 60));
-            const totalHours = Math.floor(timeLeft / (1000 * 60 * 60));
-            const totalDays = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            const totalWeeks = Math.floor(totalDays / 7);
-            const totalMonths = getMonthDiff(now, target);
-
-            if (document.getElementById("months")) {
-                document.getElementById("months").textContent = formatNumber(totalMonths);
-                document.getElementById("weeks").textContent = formatNumber(totalWeeks);
-                document.getElementById("days").textContent = formatNumber(totalDays);
-                document.getElementById("hours").textContent = formatNumber(totalHours);
-                document.getElementById("minutes").textContent = formatNumber(totalMinutes);
-                document.getElementById("seconds").textContent = formatNumber(totalSeconds);
-            }
-        }
-
-      function updateAll() {
-    const target = getTargetDate();
-    updateMainCounter(target);
-    updateDetailedBox(target);
-    updateRemainingSpringBreak();   // <--- ÚJ
+    if (document.getElementById("months")) {
+        document.getElementById("months").textContent = formatNumber(totalMonths);
+        document.getElementById("weeks").textContent = formatNumber(totalWeeks);
+        document.getElementById("days").textContent = formatNumber(totalDays);
+        document.getElementById("hours").textContent = formatNumber(totalHours);
+        document.getElementById("minutes").textContent = formatNumber(totalMinutes);
+        document.getElementById("seconds").textContent = formatNumber(totalSeconds);
+    }
 }
 
 
-        // First run and update every second
-        updateAll();
-        setInterval(updateAll, 1000);
-
-
-
-        function updateRemainingSpringBreak() {
+function updateRemainingSpringBreak() {
     const now = new Date();
 
-    // Spring break: April 2 → April 13
+    // Tavaszi szünet: Április 2. → Április 13.
     let breakStart = new Date(now.getFullYear(), 3, 2); 
-    let breakEnd = new Date(now.getFullYear(), 3, 13);  
+    let breakEnd = new Date(now.getFullYear(), 3, 13);  
 
     // Ha már április 13. után járunk → következő év
-    if (now > breakEnd) {
+    if (now > breakEnd && now.getMonth() >= 3) {
         breakStart = new Date(now.getFullYear() + 1, 3, 2);
         breakEnd = new Date(now.getFullYear() + 1, 3, 13);
     }
@@ -203,7 +262,7 @@ const counterEl = document.getElementById('counter').querySelector('span');
     const box = document.getElementById("remaining-break-box");
     const text = document.getElementById("remaining-break-text");
 
-    if (!box || !text) return; // Ha nincs HTML elem → kilép
+    if (!box || !text) return; 
 
     // SZÜNET VAN?
     if (now >= breakStart && now < breakEnd) {
@@ -230,3 +289,16 @@ const counterEl = document.getElementById('counter').querySelector('span');
         box.style.display = "none";
     }
 }
+
+
+function updateAll() {
+    const target = getTargetDate();
+    updateMainCounter(target);
+    updateDetailedBox(target);
+    updateRemainingSpringBreak();  // <--- Ezt a nevet kell használni a kódodban is
+}
+
+
+// Első futtatás és frissítés másodpercenként
+updateAll();
+setInterval(updateAll, 1000);
