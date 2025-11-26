@@ -50,29 +50,23 @@ function formatNumber(num) {
 function getWeekdaySecondsBetween(startDate, endDate) {
     let totalMs = 0;
     let cur = new Date(startDate);
-    
-    /// Ünnepnapok (Példák, 2025/2026-ra szabva - A hónap 0-indexelt)
     const holidays = [
-        new Date(2025, 0, 1),   // Újév napja
-        new Date(2025, 3, 21),  // Húsvét hétfő (Megjegyzés: a JS1-ben 3/14 van, de az 2025-ben pontatlan volt)
-        new Date(2025, 4, 1),   // Munka ünnepe
-        new Date(2025, 5, 9),   // Pünkösd hétfő (Megjegyzés: a JS1-ben 5/20 van, de az 2025-ben pontatlan volt)
-        new Date(2025, 7, 20),  // Államalapítás ünnepe
-        new Date(2025, 9, 23),  // 1956-os forradalom
-        new Date(2025, 10, 1),  // Mindenszentek
-        new Date(2025, 11, 24), // Karácsony
-        new Date(2025, 11, 25), // Karácsony (1. nap)
-        new Date(2025, 11, 26), // Karácsony (2. nap)
-        // 2026-os Újév a visszaszámlálóhoz
-        new Date(2026, 0, 1),   // Újév napja 2026
+        new Date(2025, 0, 1),  // Újév – január 1.
+        new Date(2025, 2, 15), // Nemzeti ünnep – március 15.
+        new Date(2025, 4, 1),  // A munka ünnepe – május 1.
+        new Date(2025, 7, 20), // Államalapítás ünnepe – augusztus 20.
+        new Date(2025, 9, 23), // Nemzeti ünnep – október 23.
+        new Date(2025, 10, 1), // Mindenszentek – november 1.
+        new Date(2025, 11, 25), // Karácsony – december 25.
+        new Date(2025, 11, 26), // Karácsony másnapja – december 26.
     ];
 
-    // Iskolai szünetek (Példák, csak a téli számít, de a teljesség igénye miatt itt van)
     const schoolBreaks = [
-      { start: new Date(2026, 6, 23), end: new Date(2025, 8, 1) }, // Summer Break
-        { start: new Date(2025, 10, 23), end: new Date(2025, 11,2) }, // Autumn Break
-        { start: new Date(2026, 12, 20), end: new Date(2026, 0, 5) }, // Winter Break
-        { start: new Date(2026, 4, 2), end: new Date(2026, 4, 13) }, // Mid-term Break
+        { start: new Date(2026, 5, 23), end: new Date(2026, 8, 1) }, // Nyári szünet
+        { start: new Date(2025, 9, 23), end: new Date(2025, 10, 2) }, // Őszi szünet
+        { start: new Date(2026, 11, 12), end: new Date(2027, 0, 4) }, // Téli szünet (évváltás korrigálva)
+        { start: new Date(2026, 3, 2), end: new Date(2026, 3, 12) }, // Tavaszi szünet (korrekció: április 2–12)
+        // Add more school breaks as needed
     ];
 
     while (cur < endDate) {
@@ -80,22 +74,22 @@ function getWeekdaySecondsBetween(startDate, endDate) {
         if (next > endDate) next = new Date(endDate);
 
         const day = cur.getDay(); // 0 = Sunday, 6 = Saturday
-        
+
         // Ünnepnap ellenőrzése
         const isHoliday = holidays.some(holiday => holiday.toDateString() === cur.toDateString());
-        
+
         // Szünet ellenőrzése
         const isSchoolBreak = schoolBreaks.some(breakPeriod => cur >= breakPeriod.start && cur < breakPeriod.end);
 
         // Csak hétköznap (Hétfő-Péntek) számít, ha nem ünnep és nincs szünet
         if (day !== 0 && day !== 6 && !isHoliday && !isSchoolBreak) {
-            totalMs += (next - cur); 
+            totalMs += (next - cur);
         }
 
-        cur = next; 
+        cur = next;
     }
 
-    return Math.floor(totalMs / 1000); 
+    return Math.floor(totalMs / 1000);
 }
 
 function initConfettiPool() {
