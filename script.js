@@ -11,6 +11,27 @@ const CONFETTI_REGEN_RATE = 100; // Milyen gyakran próbáljunk újraaktiválni 
 let confettiPool = []; // A konfetti elemek tárolója
 let activeConfettiCount = 0; // Aktív konfetti elemek számlálója
 
+// EXTRA: itt adhatsz meg különleges, "kivételes" iskolai napokat (alapértelmezetten üres)
+// Formátum: 'YYYY-MM-DD' pl. '2025-12-13'
+// Ha ide beírsol egy dátumot, az adott napot iskolai napként fogjuk számolni még akkor is,
+// ha hétvége (szombat/vasárnap).
+const EXTRA_SCHOOL_DAYS = [
+    // Ide kell írni a dátumot ha hozzá szeretnék adni
+];
+
+// Segédfüggvény: dátum normalizálása 'YYYY-MM-DD' formátumba
+function toYMD(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+}
+
+// Segédfüggvény: ellenőrzi, hogy egy nap szerepel-e az EXTRA_SCHOOL_DAYS-ben
+function isExtraSchoolDay(date) {
+    return EXTRA_SCHOOL_DAYS.includes(toYMD(date));
+}
+
 function getTargetDate() {
     const now = new Date();
     // Cél: Április 2. (A tavaszi szünet kezdete)
@@ -80,10 +101,15 @@ function getWeekdaySecondsBetween(startDate, endDate) {
 
         // Szünet ellenőrzése
         const isSchoolBreak = schoolBreaks.some(breakPeriod => cur >= breakPeriod.start && cur < breakPeriod.end);
+        
+        // Külön ellenőrzés: extra iskolai nap (kivétel), ha a cur dátum szerepel az EXTRA_SCHOOL_DAYS-ben
+        const extraDay = isExtraSchoolDay(cur);
 
-        // Csak hétköznap (Hétfő-Péntek) számít, ha nem ünnep és nincs szünet
-        if (day !== 0 && day !== 6 && !isHoliday && !isSchoolBreak) {
-            totalMs += (next - cur);
+        // Csak akkor számítjuk be a napot, ha:
+        // - Hétköznap (Hétfő-Péntek) ÉS nem ünnep/ne szünet, VAGY
+        // - ez egy extra iskolai nap (extraDay) és nem ünnep és nem szünet
+        if ((!isHoliday && !isSchoolBreak) && ((day !== 0 && day !== 6) || extraDay)) {
+            totalMs += (next - cur); // Hozzáadjuk az eltelt másodperceket
         }
 
         cur = next;
@@ -247,7 +273,7 @@ function updateRemainingSpringBreak() {
 
     // Tavaszi szünet: Április 2. → Április 13.
     let breakStart = new Date(now.getFullYear(), 3, 2); 
-    let breakEnd = new Date(now.getFullYear(), 3, 13);  
+    let breakEnd = new Date(now.getFullYear(), 3, 13); 
 
     // Ha már április 13. után járunk → következő év
     if (now > breakEnd && now.getMonth() >= 3) {
@@ -291,7 +317,7 @@ function updateAll() {
     const target = getTargetDate();
     updateMainCounter(target);
     updateDetailedBox(target);
-    updateRemainingSpringBreak();  // <--- Ezt a nevet kell használni a kódodban is
+    updateRemainingSpringBreak();  // <--- Ezt a nevet kell használni a kódodban is
 }
 
 
